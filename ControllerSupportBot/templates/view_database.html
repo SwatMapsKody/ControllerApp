@@ -22,9 +22,21 @@
             text-align: center;
         }
     </style>
+    <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    <script>
+        tinymce.init({
+            selector: '.tinymce-editor',  // Apply TinyMCE to elements with the class `tinymce-editor`
+            menubar: false,
+            plugins: 'advlist autolink lists link image charmap preview anchor searchreplace visualblocks code fullscreen insertdatetime media table paste help wordcount',
+            toolbar: 'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
+            height: 500,
+            branding: false
+        });
+    </script>
 </head>
 <body>
     <h1>Database Records</h1>
+
     <h2>Controller Manufacturers</h2>
     <table>
         <thead>
@@ -42,6 +54,7 @@
             {% endfor %}
         </tbody>
     </table>
+
     <h2>Controllers</h2>
     <table>
         <thead>
@@ -58,11 +71,18 @@
                 <td>{{ controller.id }}</td>
                 <td>{{ controller.manufacturer.name }}</td>
                 <td>{{ controller.model }}</td>
-                <td>{{ controller.description }}</td>
+                <td>
+                    <form method="post" action="{% url 'update_controller_description' controller.id %}">
+                        {% csrf_token %}
+                        <textarea name="description" class="tinymce-editor">{{ controller.description }}</textarea>
+                        <button type="submit">Save</button>
+                    </form>
+                </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
+
     <h2>Support Workflows</h2>
     <table>
         <thead>
@@ -79,7 +99,13 @@
                 <td>{{ workflow.id }}</td>
                 <td>{{ workflow.controller.model }}</td>
                 <td>{{ workflow.question }}</td>
-                <td>{{ workflow.answer|safe }}</td>
+                <td>
+                    <form method="post" action="{% url 'update_workflow_answer' workflow.id %}">
+                        {% csrf_token %}
+                        <textarea name="answer" class="tinymce-editor">{{ workflow.answer|safe }}</textarea>
+                        <button type="submit">Save</button>
+                    </form>
+                </td>
             </tr>
             {% endfor %}
         </tbody>
