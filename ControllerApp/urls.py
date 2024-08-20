@@ -27,7 +27,7 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('ckeditor/', include('ckeditor_uploader.urls')),  # CKEditor file upload URLs    path('', include('your_app.urls')),  # Your app URLs
+    path('tinymce/', include('tinymce.urls'))
 ]
 
 if settings.DEBUG:

@@ -1,5 +1,9 @@
 from django import forms
+from tinymce.widgets import TinyMCE
 from .models import ControllerManufacturer, Controller, SupportWorkflow
+
+class MyForm(forms.ModelForm):
+    content = forms.CharField(widget=TinyMCE(attrs={'cols': 80, 'rows': 30}))
 
 class ControllerManufacturerForm(forms.ModelForm):
     class Meta:
@@ -18,3 +22,4 @@ class SupportWorkflowForm(forms.ModelForm):
         widgets = {
             'answer': forms.Textarea(attrs={'class': 'ckeditor'}),  # Use CKEditor widget
         }
+
