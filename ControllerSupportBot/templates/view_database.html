@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Database View</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table, th, td {
+            border: 1px solid black;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+
+        h1 {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Database Records</h1>
+    <h2>Controller Manufacturers</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for manufacturer in manufacturers %}
+            <tr>
+                <td>{{ manufacturer.id }}</td>
+                <td>{{ manufacturer.name }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <h2>Controllers</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Manufacturer</th>
+                <th>Model</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for controller in controllers %}
+            <tr>
+                <td>{{ controller.id }}</td>
+                <td>{{ controller.manufacturer.name }}</td>
+                <td>{{ controller.model }}</td>
+                <td>{{ controller.description }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <h2>Support Workflows</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Controller</th>
+                <th>Question</th>
+                <th>Answer</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for workflow in workflows %}
+            <tr>
+                <td>{{ workflow.id }}</td>
+                <td>{{ workflow.controller.model }}</td>
+                <td>{{ workflow.question }}</td>
+                <td>{{ workflow.answer|safe }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
