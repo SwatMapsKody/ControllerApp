@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}ControllerApp{% endblock %}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .header {
+            background-color: #EA5725;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+        }
+        .nav {
+            background-color: #F68D23;
+            padding: 10px;
+            text-align: center;
+        }
+        .nav a {
+            margin: 0 15px;
+            color: #fff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .nav a:hover {
+            text-decoration: underline;
+        }
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .footer {
+            background-color: #EA5725;
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+    </style>
+    <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    <script>
+        tinymce.init({
+            selector: '.tinymce-editor',  // Apply TinyMCE to elements with the class `tinymce-editor`
+            menubar: false,
+            plugins: 'advlist autolink lists link image charmap preview anchor searchreplace visualblocks code fullscreen insertdatetime media table paste help wordcount',
+            toolbar: 'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
+            height: 500,
+            branding: false
+        });
+    </script>
+</head>
+<body>
+    <div class="header">
+        <h1>ControllerApp</h1>
+    </div>
+    <div class="nav">
+        <a href="{% url 'landing_page' %}">Home</a>
+        <a href="{% url 'add_controller' %}">Add Controller</a>
+        <a href="{% url 'add_controller_manufacturer' %}">Add Manufacturer</a>
+        <a href="{% url 'add_support_workflow' %}">Add Support Workflow</a>
+        <a href="{% url 'troubleshooting' %}">Troubleshooting</a>
+        <a href="{% url 'view_database' %}">Database View</a>
+    </div>
+    <div class="container">
+        {% block content %}
+        <!-- Page-specific content will go here -->
+        {% endblock %}
+    </div>
+    <div class="footer">
+        <p>&copy; 2024 ControllerApp. All rights reserved.</p>
+    </div>
+</body>
+</html>

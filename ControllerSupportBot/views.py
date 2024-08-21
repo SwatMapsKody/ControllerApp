@@ -69,3 +69,6 @@ def troubleshooting(request):
         'selected_controller': selected_controller,
     }
     return render(request, 'troubleshooting.html', context)
+
+def landing_page(request):
+    return render(request, 'landing_page.html')

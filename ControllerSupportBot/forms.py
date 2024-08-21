@@ -22,4 +22,3 @@ class SupportWorkflowForm(forms.ModelForm):
         widgets = {
             'answer': forms.Textarea(attrs={'class': 'ckeditor'}),  # Use CKEditor widget
         }
-

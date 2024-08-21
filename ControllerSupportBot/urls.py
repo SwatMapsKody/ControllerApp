@@ -18,10 +18,12 @@ from django.urls import path, include
 from . import views  # Import the entire views module
 
 urlpatterns = [
+    path('', views.landing_page, name='landing_page'),
     path('add_controller_manufacturer/', views.add_controller_manufacturer, name='add_controller_manufacturer'),
     path('add_controller/', views.add_controller, name='add_controller'),
     path('add_support_workflow/', views.add_support_workflow, name='add_support_workflow'),
     path('view_database/', views.view_database, name='view_database'),
     path('troubleshooting/', views.troubleshooting, name='troubleshooting'),
-    path('ckeditor/', include('ckeditor_uploader.urls'))
+    path('tinymce/', include('tinymce.urls')),
+
 ]
