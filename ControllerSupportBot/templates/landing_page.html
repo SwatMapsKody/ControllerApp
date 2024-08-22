@@ -61,7 +61,7 @@
                 {% for manufacturer in manufacturers %}
                     if ({{ manufacturer.id }} == manufacturerId) {
                         {% for controller in manufacturer.controllers.all %}
-                            newHtml += `<button onclick="toggleWorkflows({{ controller.id }})" class="controller-button">{{ controller.model }}</button>`;
+                            newHtml += `<button onclick="toggleVersions({{ controller.id }})" class="controller-button">{{ controller.model }}</button>`;
                         {% endfor %}
                     }
                 {% endfor %}
@@ -69,8 +69,9 @@
             }
         }
 
-        function toggleWorkflows(controllerId) {
+        function toggleVersions(controllerId) {
             var column3 = document.getElementById('column-3');
+            column3.innerHTML = ''; // Clear previous workflows
 
             var clickedButton = event.target;
 
@@ -84,7 +85,7 @@
             });
 
             if (isActive) {
-                column3.innerHTML = ''; // Clear workflows column
+                column3.innerHTML = ''; // Clear versions column
             } else {
                 clickedButton.classList.add('active'); // Set the clicked button to active
 
@@ -92,13 +93,47 @@
                 {% for manufacturer in manufacturers %}
                     {% for controller in manufacturer.controllers.all %}
                         if ({{ controller.id }} == controllerId) {
-                            {% for workflow in controller.support_workflows.all %}
-                                newHtml += `<button class="workflow-button">{{ workflow.question }}</button>`;
+                            {% for version in controller.versions.all %}
+                                newHtml += `<button onclick="toggleWorkflows({{ version.id }})" class="version-button">{{ version.version }}</button>`;
                             {% endfor %}
                         }
                     {% endfor %}
                 {% endfor %}
                 column3.innerHTML = newHtml;
+            }
+        }
+
+        function toggleWorkflows(versionId) {
+            var column3 = document.getElementById('column-3');
+            var clickedButton = event.target;
+
+            // Check if the button was already active
+            var isActive = clickedButton.classList.contains('active');
+
+            // Reset all version buttons
+            var allVersionButtons = document.querySelectorAll('.version-button');
+            allVersionButtons.forEach(function(button) {
+                button.classList.remove('active');
+            });
+
+            if (isActive) {
+                column3.innerHTML = ''; // Clear workflows column
+            } else {
+                clickedButton.classList.add('active'); // Set the clicked button to active
+
+                var newHtml = '';
+                {% for manufacturer in manufacturers %}
+                    {% for controller in manufacturer.controllers.all %}
+                        {% for version in controller.versions.all %}
+                            if ({{ version.id }} == versionId) {
+                                {% for workflow in version.support_workflows.all %}
+                                    newHtml += `<button class="workflow-button">{{ workflow.question }}</button>`;
+                                {% endfor %}
+                            }
+                        {% endfor %}
+                    {% endfor %}
+                {% endfor %}
+                column3.innerHTML += newHtml;
             }
         }
     </script>
