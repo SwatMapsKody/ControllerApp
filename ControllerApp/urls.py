@@ -28,5 +28,4 @@ urlpatterns = [
     path('tinymce/', include('tinymce.urls')),
     path('update_workflow/<int:workflow_id>/', views.update_workflow_answer, name='update_workflow_answer'),
     path('delete_entry/<int:entry_id>/<str:model_type>/', views.delete_entry, name='delete_entry'),
-    path('edit/<int:entry_id>\<str:model_name>/', views.edit_entry, name='edit_entry'),
 ]

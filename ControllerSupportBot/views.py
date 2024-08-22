@@ -103,36 +103,3 @@ def delete_entry(request, entry_id, model_type):
 
     entry.delete()
     return redirect('view_database')
-
-def edit_entry(request, entry_id, model_name):
-    if model_name == 'manufacturer':
-        model = ControllerManufacturer
-        form_class = ControllerManufacturerForm
-    elif model_name == 'controller':
-        model = Controller
-        form_class = ControllerForm
-    elif model_name == 'support_workflow':
-        model = SupportWorkflow
-        form_class = SupportWorkflowForm
-    else:
-        return JsonResponse({'error': 'Invalid model name'}, status=400)
-
-    entry = get_object_or_404(model, id=entry_id)
-
-    if request.method == 'POST':
-        form = form_class(request.POST, instance=entry)
-        if form.is_valid():
-            form.save()
-            return JsonResponse({'success': True})
-        else:
-            return JsonResponse({'errors': form.errors}, status=400)
-    else:
-        form = form_class(instance=entry)
-        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-            # Render the form for the modal
-            html = render_to_string('edit_modal_form.html', {'form': form, 'model_name': model_name})
-            return JsonResponse({'html': html})
-        else:
-            return render(request, 'view_database.html', {'form': form, 'model_name': model_name})
-
-

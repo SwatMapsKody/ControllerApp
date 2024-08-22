@@ -1,8 +1,30 @@
-<div class="modal-content">
-    <span class="close">&times;</span>
-    <form id="editForm" method="post" action="{% url 'edit_entry' entry.id model_name %}">
+{% if manufacturer %}
+    <form id="editForm" action="{% url 'update_manufacturer' manufacturer.id %}" method="post">
         {% csrf_token %}
-        {{ form.as_p }}
+        <!-- Form fields for manufacturer -->
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" value="{{ manufacturer.name }}">
+        <!-- Add other fields as necessary -->
         <button type="submit">Save</button>
     </form>
-</div>
+{% elif controller %}
+    <form id="editForm" action="{% url 'update_controller' controller.id %}" method="post">
+        {% csrf_token %}
+        <!-- Form fields for controller -->
+        <label for="model">Model:</label>
+        <input type="text" id="model" name="model" value="{{ controller.model }}">
+        <!-- Add other fields as necessary -->
+        <button type="submit">Save</button>
+    </form>
+{% elif workflow %}
+    <form id="editForm" action="{% url 'update_workflow' workflow.id %}" method="post">
+        {% csrf_token %}
+        <!-- Form fields for workflow -->
+        <label for="question">Question:</label>
+        <input type="text" id="question" name="question" value="{{ workflow.question }}">
+        <label for="answer">Answer:</label>
+        <textarea id="answer" name="answer">{{ workflow.answer }}</textarea>
+        <!-- Add other fields as necessary -->
+        <button type="submit">Save</button>
+    </form>
+{% endif %}
