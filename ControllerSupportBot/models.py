@@ -1,14 +1,14 @@
 from django.db import models
 from tinymce.models import HTMLField  # Use HTMLField for TinyMCE
 
-class ControllerManufacturer(models.Model):
+class Manufacturer(models.Model):
     name = models.CharField(max_length=100, unique=True)
 
     def __str__(self):
         return self.name
 
 class Controller(models.Model):
-    manufacturer = models.ForeignKey(ControllerManufacturer, on_delete=models.CASCADE, related_name='controllers')
+    manufacturer = models.ForeignKey(Manufacturer, on_delete=models.CASCADE, related_name='controllers')
     model = models.CharField(max_length=100)
 
 

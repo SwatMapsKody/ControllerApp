@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ControllerApp - Landing Page</title>
+    <title>ControllerApp</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -17,33 +17,36 @@
             padding: 20px;
             text-align: center;
         }
-        .container {
-            width: 80%;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        .section {
-            background-color: #fff;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-            padding: 20px;
-        }
-        .section h2 {
-            margin-top: 0;
-        }
-        .section a {
-            display: block;
-            margin: 10px 0;
-            padding: 10px;
-            background-color: #F68D23;
-            color: #fff;
+        .admin-button {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            padding: 10px 20px;
+            background-color: #333;
+            color: white;
             text-decoration: none;
             border-radius: 5px;
-            text-align: center;
         }
-        .section a:hover {
+        .container {
+            width: 80%;
+            margin: 20px auto;
+            padding: 20px;
+        }
+        .manufacturer-button {
+            display: block;
+            background-color: #F68D23;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            margin-bottom: 10px;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .manufacturer-button:hover {
             background-color: #EA5725;
+        }
+        .controller-section {
+            display: none; /* Initially hidden */
         }
         .footer {
             background-color: #EA5725;
@@ -55,30 +58,38 @@
             bottom: 0;
         }
     </style>
+    <script>
+        function toggleControllers(manufacturerId) {
+            var element = document.getElementById('controllers-' + manufacturerId);
+            element.style.display = (element.style.display === 'none') ? 'block' : 'none';
+        }
+    </script>
 </head>
 <body>
     <div class="header">
         <h1>Welcome to ControllerApp</h1>
-        <p>Your go-to solution for managing controllers and support workflows</p>
+        <a href="{% url 'admin:index' %}" class="admin-button" target="_blank">Admin Panel</a>
     </div>
 
     <div class="container">
-        <div class="section">
-            <h2>Manage Controllers</h2>
-            <a href="{% url 'add_controller' %}">Add Controller</a>
-            <a href="{% url 'add_controller_manufacturer' %}">Add Manufacturer</a>
-        </div>
-
-        <div class="section">
-            <h2>Support and Troubleshooting</h2>
-            <a href="{% url 'add_support_workflow' %}">Add Support Workflow</a>
-            <a href="{% url 'troubleshooting' %}">Troubleshooting</a>
-        </div>
-
-        <div class="section">
-            <h2>Database View</h2>
-            <a href="{% url 'view_database' %}">View Database Records</a>
-        </div>
+        {% if manufacturers %}
+            {% for manufacturer in manufacturers %}
+                <button onclick="toggleControllers({{ manufacturer.id }})" class="manufacturer-button">
+                    {{ manufacturer.name }}
+                </button>
+                <div id="controllers-{{ manufacturer.id }}" class="controller-section">
+                    {% if controllers_by_manufacturer|get:manufacturer.id %}
+                        {% for controller in controllers_by_manufacturer|get:manufacturer.id %}
+                            <p>{{ controller.model }}</p>
+                        {% endfor %}
+                    {% else %}
+                        <p>No controllers available.</p>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>Database is Empty</p>
+        {% endif %}
     </div>
 
     <div class="footer">
