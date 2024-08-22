@@ -3,66 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <title>Troubleshooting Workflow</title>
-    <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
-    <script>
-        tinymce.init({
-            selector: 'textarea',  // Apply TinyMCE to all textarea elements
-            menubar: false,
-            plugins: 'advlist autolink lists link image charmap preview anchor searchreplace visualblocks code fullscreen insertdatetime media table paste help wordcount',
-            toolbar: 'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
-            height: 500,
-            branding: false
-        });
-    </script>
 </head>
 <body>
-    <h1>Troubleshooting Workflow</h1>
+    {% extends 'base_template.html' %}
 
-    <!-- Step 1: Select Manufacturer -->
-    <h2>Select the Controller Manufacturer</h2>
-    <form method="get">
-        <select name="manufacturer" onchange="this.form.submit()">
-            <option value="">Select a Manufacturer</option>
-            {% for manufacturer in manufacturers %}
-            <option value="{{ manufacturer.id }}" {% if selected_manufacturer and selected_manufacturer.id %}selected{% endif %}>
-                {{ manufacturer.name }}
-            </option>
+    {% block title %}Troubleshooting Workflow{% endblock %}
+    {% block content %}
+        <h1>Troubleshooting Workflow</h1>
+
+        <!-- Step 1: Select Manufacturer -->
+        <h2>Select the Controller Manufacturer</h2>
+        <form method="get">
+            <select name="manufacturer" onchange="this.form.submit()">
+                <option value="">Select a Manufacturer</option>
+                {% for manufacturer in manufacturers %}
+                <option value="{{ manufacturer.id }}" {% if selected_manufacturer and selected_manufacturer.id %}selected{% endif %}>
+                    {{ manufacturer.name }}
+                </option>
+                {% endfor %}
+            </select>
+        </form>
+
+        <!-- Step 2: Select Controller -->
+        {% if selected_manufacturer %}
+        <h2>Select the Controller</h2>
+        <form method="get">
+            <input type="hidden" name="manufacturer" value="{{ selected_manufacturer.id }}">
+            <select name="controller" onchange="this.form.submit()">
+                <option value="">Select a Controller</option>
+                {% for controller in controllers %}
+                <option value="{{ controller.id }}" {% if selected_controller and selected_controller.id %}selected{% endif %}>
+                    {{ controller.model }}
+                </option>
+                {% endfor %}
+            </select>
+        </form>
+        {% endif %}
+
+        <!-- Step 3: Display Workflow Questions -->
+        {% if selected_controller %}
+        <h2>Support Workflow</h2>
+        <ul>
+            {% for workflow in workflows %}
+            <li>
+                <a href="#" onclick="document.getElementById('answer-{{ workflow.id }}').style.display='block'; return false;">
+                    {{ workflow.question }}
+                </a>
+                <div id="answer-{{ workflow.id }}" style="display: none;">
+                    <textarea style="display:none;">{{ workflow.answer|safe }}</textarea> <!-- Hidden textarea for TinyMCE -->
+                    <p>{{ workflow.answer|safe }}</p> <!-- Display answer as plain text -->
+                </div>
+            </li>
             {% endfor %}
-        </select>
-    </form>
-
-    <!-- Step 2: Select Controller -->
-    {% if selected_manufacturer %}
-    <h2>Select the Controller</h2>
-    <form method="get">
-        <input type="hidden" name="manufacturer" value="{{ selected_manufacturer.id }}">
-        <select name="controller" onchange="this.form.submit()">
-            <option value="">Select a Controller</option>
-            {% for controller in controllers %}
-            <option value="{{ controller.id }}" {% if selected_controller and selected_controller.id %}selected{% endif %}>
-                {{ controller.model }}
-            </option>
-            {% endfor %}
-        </select>
-    </form>
-    {% endif %}
-
-    <!-- Step 3: Display Workflow Questions -->
-    {% if selected_controller %}
-    <h2>Support Workflow</h2>
-    <ul>
-        {% for workflow in workflows %}
-        <li>
-            <a href="#" onclick="document.getElementById('answer-{{ workflow.id }}').style.display='block'; return false;">
-                {{ workflow.question }}
-            </a>
-            <div id="answer-{{ workflow.id }}" style="display: none;">
-                <textarea style="display:none;">{{ workflow.answer|safe }}</textarea> <!-- Hidden textarea for TinyMCE -->
-                <p>{{ workflow.answer|safe }}</p> <!-- Display answer as plain text -->
-            </div>
-        </li>
-        {% endfor %}
-    </ul>
-    {% endif %}
+        </ul>
+        {% endif %}
+    {% endblock %}
 </body>
 </html>

@@ -13,12 +13,14 @@ class ControllerManufacturerForm(forms.ModelForm):
 class ControllerForm(forms.ModelForm):
     class Meta:
         model = Controller
-        fields = ['manufacturer', 'model', 'description']
+        fields = ['manufacturer', 'model']
 
 class SupportWorkflowForm(forms.ModelForm):
     class Meta:
         model = SupportWorkflow
         fields = ['controller', 'question', 'answer']
         widgets = {
-            'answer': forms.Textarea(attrs={'class': 'ckeditor'}),  # Use CKEditor widget
+            'controller': forms.Select(choices=[(c.id, str(c)) for c in Controller.objects.all()]),  # Dropdown for controllers
+            'question': forms.TextInput(attrs={'placeholder': 'Enter your question here', 'class': 'form-control'}),
+            'answer': TinyMCE(attrs={'cols': 80, 'rows': 30}),  # Rich text editor for answer
         }

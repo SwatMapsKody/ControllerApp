@@ -22,93 +22,151 @@
             text-align: center;
         }
     </style>
-    <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
-    <script>
-        tinymce.init({
-            selector: '.tinymce-editor',  // Apply TinyMCE to elements with the class `tinymce-editor`
-            menubar: false,
-            plugins: 'advlist autolink lists link image charmap preview anchor searchreplace visualblocks code fullscreen insertdatetime media table paste help wordcount',
-            toolbar: 'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
-            height: 500,
-            branding: false
-        });
-    </script>
 </head>
 <body>
-    <h1>Database Records</h1>
+    {% extends 'base_template.html' %}
 
-    <h2>Controller Manufacturers</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for manufacturer in manufacturers %}
-            <tr>
-                <td>{{ manufacturer.id }}</td>
-                <td>{{ manufacturer.name }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    {% block title %}Database Records{% endblock %}
+    {% block content %}
+        <h1>Database Records</h1>
 
-    <h2>Controllers</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Manufacturer</th>
-                <th>Model</th>
-                <th>Description</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for controller in controllers %}
-            <tr>
-                <td>{{ controller.id }}</td>
-                <td>{{ controller.manufacturer.name }}</td>
-                <td>{{ controller.model }}</td>
-                <td>
-                    <form method="post" action="{% url 'update_controller_description' controller.id %}">
-                        {% csrf_token %}
-                        <textarea name="description" class="tinymce-editor">{{ controller.description }}</textarea>
-                        <button type="submit">Save</button>
-                    </form>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+        <h2>Controller Manufacturers</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for manufacturer in manufacturers %}
+                <tr>
+                    <td>{{ manufacturer.id }}</td>
+                    <td>{{ manufacturer.name }}</td>
+                     <td>
+                        <a href="{% url 'edit_entry' manufacturer.id 'manufacturer'%}">Edit</a>
+                        <a href="{% url 'delete_entry' manufacturer.id 'manufacturer'%}">Delete</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
 
-    <h2>Support Workflows</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Controller</th>
-                <th>Question</th>
-                <th>Answer</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for workflow in workflows %}
-            <tr>
-                <td>{{ workflow.id }}</td>
-                <td>{{ workflow.controller.model }}</td>
-                <td>{{ workflow.question }}</td>
-                <td>
-                    <form method="post" action="{% url 'update_workflow_answer' workflow.id %}">
-                        {% csrf_token %}
-                        <textarea name="answer" class="tinymce-editor">{{ workflow.answer|safe }}</textarea>
-                        <button type="submit">Save</button>
-                    </form>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+        <h2>Controllers</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Manufacturer</th>
+                    <th>Model</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for controller in controllers %}
+                <tr>
+                    <td>{{ controller.id }}</td>
+                    <td>{{ controller.manufacturer.name }}</td>
+                    <td>{{ controller.model }}</td>
+                    <td>
+                        <a href="{% url 'edit_entry' controller.id 'controller'%}">Edit</a>
+                        <a href="{% url 'delete_entry' controller.id 'controller' %}">Delete</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <h2>Support Workflows</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Controller</th>
+                    <th>Question</th>
+                    <th>Answer</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for workflow in workflows %}
+                <tr>
+                    <td>{{ workflow.id }}</td>
+                    <td>{{ workflow.controller.model }}</td>
+                    <td>{{ workflow.question }}</td>
+                    <td><p>{{ workflow.answer|safe }}</p></td>
+                    <td>
+                        <a href="{% url 'edit_entry' workflow.id 'workflow' %}">Edit</a>
+                        <a href="{% url 'delete_entry' workflow.id 'workflow' %}">Delete</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+       <!-- Modal -->
+        <div id="editModal">
+            <div id="modalFormContainer"></div>
+        </div>
+    {% endblock %}
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+        const modal = document.getElementById('editModal');
+        const closeModal = document.querySelector('.close');
+        const modalFormContainer = document.getElementById('modalFormContainer');
+
+        document.querySelectorAll('[data-edit]').forEach(button => {
+            button.addEventListener('click', function(event) {
+                event.preventDefault();
+                const { model, id } = this.dataset;
+                fetch(`/edit/${model}/${id}/`, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.html) {
+                        modalFormContainer.innerHTML = data.html;
+                        modal.style.display = 'flex'; // Center the modal
+                    } else {
+                        console.error('No HTML returned');
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            });
+        });
+
+        closeModal.addEventListener('click', function() {
+            modal.style.display = 'none';
+        });
+
+        window.addEventListener('click', function(event) {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+
+        document.addEventListener('submit', function(event) {
+            if (event.target.id === 'editForm') {
+                event.preventDefault();
+                const formData = new FormData(event.target);
+                fetch(event.target.action, {
+                    method: 'POST',
+                    body: formData,
+                }).then(response => response.json())
+                  .then(data => {
+                      if (data.success) {
+                          location.reload(); // Reload the page or update the DOM as needed
+                      } else {
+                          console.error(data.errors);
+                      }
+                  });
+            }
+        });
+    });
+    </script>
 </body>
 </html>

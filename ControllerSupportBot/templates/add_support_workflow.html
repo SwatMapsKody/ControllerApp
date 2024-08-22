@@ -3,24 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <title>Add Support Workflow</title>
-    <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
-    <script>
-        tinymce.init({
-            selector: 'textarea',  // Use 'textarea' to target all textarea elements
-            menubar: false,
-            plugins: 'advlist autolink lists link image charmap preview anchor searchreplace visualblocks code fullscreen insertdatetime media table paste help wordcount',
-            toolbar: 'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
-            height: 500,
-            branding: false
-        });
-    </script>
 </head>
 <body>
-    <h1>Add Support Workflow</h1>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.content }}
-        <button type="submit">Save</button>
-    </form>
+    {% extends 'base_template.html' %}
+
+    {% block title %}Add Support Workflow{% endblock %}
+
+    {% block content %}
+        <h1>Add Support Workflow</h1>
+        <div class="form-container">
+            <div class = "form-group">
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit">Save</button>
+                </form>
+            </div>
+        </div>
+    {% endblock %}
 </body>
 </html>

@@ -25,5 +25,8 @@ urlpatterns = [
     path('add_support_workflow/', views.add_support_workflow, name='add_support_workflow'),
     path('view_database/', views.view_database, name='view_database'),
     path('troubleshooting/', views.troubleshooting, name='troubleshooting'),
-    path('tinymce/', include('tinymce.urls'))
+    path('tinymce/', include('tinymce.urls')),
+    path('update_workflow/<int:workflow_id>/', views.update_workflow_answer, name='update_workflow_answer'),
+    path('delete_entry/<int:entry_id>/<str:model_type>/', views.delete_entry, name='delete_entry'),
+    path('edit/<int:entry_id>\<str:model_name>/', views.edit_entry, name='edit_entry'),
 ]

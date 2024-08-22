@@ -10,7 +10,7 @@ class ControllerManufacturer(models.Model):
 class Controller(models.Model):
     manufacturer = models.ForeignKey(ControllerManufacturer, on_delete=models.CASCADE, related_name='controllers')
     model = models.CharField(max_length=100)
-    description = HTMLField(blank=True, null=True)  # Changed to HTMLField
+
 
     def __str__(self):
         return f"{self.manufacturer.name} - {self.model}"

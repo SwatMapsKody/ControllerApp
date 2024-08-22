@@ -1,4 +1,7 @@
-from django.shortcuts import render, redirect
+from django.http import HttpResponseNotFound, JsonResponse
+from django.shortcuts import render, redirect,get_object_or_404
+from django.template.loader import render_to_string
+
 from .models import ControllerManufacturer, Controller, SupportWorkflow
 from .forms import ControllerManufacturerForm, ControllerForm, SupportWorkflowForm
 
@@ -70,5 +73,66 @@ def troubleshooting(request):
     }
     return render(request, 'troubleshooting.html', context)
 
+
+def update_workflow_answer(request, workflow_id):
+    workflow = get_object_or_404(SupportWorkflow, id=workflow_id)
+
+    if request.method == 'POST':
+        form = SupportWorkflowForm(request.POST, instance=workflow)
+        if form.is_valid():
+            form.save()
+            return redirect('view_database')  # Redirect to the database view
+    else:
+        form = SupportWorkflowForm(instance=workflow)
+
+    return render(request, 'view_database', {'form': form, 'workflow': workflow})
+
 def landing_page(request):
     return render(request, 'landing_page.html')
+
+
+def delete_entry(request, entry_id, model_type):
+    if model_type == 'controller':
+        entry = get_object_or_404(Controller, id=entry_id)
+    elif model_type == 'manufacturer':
+        entry = get_object_or_404(ControllerManufacturer, id=entry_id)
+    elif model_type == 'workflow':
+        entry = get_object_or_404(SupportWorkflow, id=entry_id)
+    else:
+        return HttpResponseNotFound("Model type not supported")
+
+    entry.delete()
+    return redirect('view_database')
+
+def edit_entry(request, entry_id, model_name):
+    if model_name == 'manufacturer':
+        model = ControllerManufacturer
+        form_class = ControllerManufacturerForm
+    elif model_name == 'controller':
+        model = Controller
+        form_class = ControllerForm
+    elif model_name == 'support_workflow':
+        model = SupportWorkflow
+        form_class = SupportWorkflowForm
+    else:
+        return JsonResponse({'error': 'Invalid model name'}, status=400)
+
+    entry = get_object_or_404(model, id=entry_id)
+
+    if request.method == 'POST':
+        form = form_class(request.POST, instance=entry)
+        if form.is_valid():
+            form.save()
+            return JsonResponse({'success': True})
+        else:
+            return JsonResponse({'errors': form.errors}, status=400)
+    else:
+        form = form_class(instance=entry)
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            # Render the form for the modal
+            html = render_to_string('edit_modal_form.html', {'form': form, 'model_name': model_name})
+            return JsonResponse({'html': html})
+        else:
+            return render(request, 'view_database.html', {'form': form, 'model_name': model_name})
+
+

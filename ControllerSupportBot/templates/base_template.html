@@ -3,6 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+   <!-- Place the first <script> tag in your HTML's <head> -->
+    <script src="https://cdn.tiny.cloud/1/oet0mn54garf4zku5dihdk8c831jsr13txk2njo8ufk1liou/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
+
+    <!-- Place the following <script> and <textarea> tags your HTML's <body> -->
+    <script>
+        tinymce.init({
+            selector: 'textarea',  // Use 'textarea' to target all textarea elements
+            menubar: false,
+            plugins: 'advlist autolink lists link image charmap preview anchor searchreplace visualblocks code fullscreen insertdatetime media table paste help wordcount',
+            toolbar: 'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
+            height: 200,// Adjust this value to make the editor shorter
+            width: '100%',  // You can set this to a specific value like '500px' or a percentage
+            branding: false
+        });
+    </script>
+
+
     <title>{% block title %}ControllerApp{% endblock %}</title>
     <style>
         body {
@@ -10,6 +28,9 @@
             margin: 0;
             padding: 0;
             background-color: #f4f4f4;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
         .header {
             background-color: #EA5725;
@@ -35,28 +56,116 @@
             width: 80%;
             margin: 0 auto;
             padding: 20px;
+            flex: 1;
         }
         .footer {
             background-color: #EA5725;
             color: #fff;
             text-align: center;
             padding: 10px;
-            position: fixed;
             width: 100%;
             bottom: 0;
         }
+         h1 {
+            color: #000000; /* Match the primary color of your app */
+            font-size: 2.5em; /* Adjust the font size as needed */
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #EA5725; /* Primary button color */
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+    button:hover {
+        background-color: #F68D23; /* Slightly lighter color for hover effect */
+        transform: scale(1.05); /* Slight scale effect on hover */
+    }
+
+    button:active {
+        background-color: #E04A19; /* Darker color when button is pressed */
+        transform: scale(0.98); /* Slight scale down effect on click */
+    }
+
+              /* Styling for form container */
+        .form-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Center the form items horizontally */
+            max-width: 100%; /* Ensure it doesn't exceed the container width */
+            margin: 0 auto; /* Center the form container itself */
+        }
+
+        /* Styling for form groups */
+        .form-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px; /* Space between form groups */
+        }
+
+        /* Styling for labels */
+        .form-group label {
+            margin-right: 15px; /* Space between label and form element */
+            font-size: 16px; /* Match font size with form elements */
+            color: black; /* Text color for labels */
+            font-weight: bold; /* Optional: Make labels bold */
+            width: auto; /* Allow label to take up only as much space as needed */
+        }
+
+        /* Styling for dropdowns */
+        select {
+            width: 100%;
+            max-width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #fff;
+            font-size: 16px;
+            box-sizing: border-box; /* Include padding in the element's total width and height */
+            margin: 0 auto;
+        }
+
+        /* Focus state for dropdowns */
+        select:focus {
+            border-color: #F68D23;
+            outline: none;
+            box-shadow: 0 0 5px rgba(246, 141, 35, 0.5);
+        }
+
+        /* Styling for form text entries */
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        textarea {
+            width: 100%;
+            max-width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            box-sizing: border-box; /* Include padding in the element's total width and height */
+            margin-bottom: 10px; /* Space below form entries */
+        }
+
+        /* Focus state for form text entries */
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="password"]:focus,
+        textarea:focus {
+            border-color: #F68D23;
+            outline: none;
+            box-shadow: 0 0 5px rgba(246, 141, 35, 0.5);
+        }
+
+
     </style>
-    <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
-    <script>
-        tinymce.init({
-            selector: '.tinymce-editor',  // Apply TinyMCE to elements with the class `tinymce-editor`
-            menubar: false,
-            plugins: 'advlist autolink lists link image charmap preview anchor searchreplace visualblocks code fullscreen insertdatetime media table paste help wordcount',
-            toolbar: 'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
-            height: 500,
-            branding: false
-        });
-    </script>
 </head>
 <body>
     <div class="header">
@@ -64,8 +173,8 @@
     </div>
     <div class="nav">
         <a href="{% url 'landing_page' %}">Home</a>
-        <a href="{% url 'add_controller' %}">Add Controller</a>
         <a href="{% url 'add_controller_manufacturer' %}">Add Manufacturer</a>
+        <a href="{% url 'add_controller' %}">Add Controller</a>
         <a href="{% url 'add_support_workflow' %}">Add Support Workflow</a>
         <a href="{% url 'troubleshooting' %}">Troubleshooting</a>
         <a href="{% url 'view_database' %}">Database View</a>
