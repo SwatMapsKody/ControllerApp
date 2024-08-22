@@ -1,0 +1,134 @@
+/* Font Definitions */
+@font-face {
+    font-family: 'Hemi-Head';
+    src: url('{% static "fonts/hemi-head.ttf" %}') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Myriad Pro';
+    src: url('{% static "fonts/myriad-pro-black.otf" %}') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* General Styles */
+body {
+    font-family: 'Myriad Pro', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #F4F4F4; /* Light grey background */
+}
+
+/* Header */
+.header {
+    background-color: #EA5725; /* Primary orange */
+    color: #FFFFFF; /* White text */
+    padding: 20px;
+    text-align: center;
+}
+
+.header h1 {
+    font-family: 'Hemi-Head', sans-serif;
+}
+
+/* Admin Button */
+.admin-button {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    padding: 10px 20px;
+    background-color: #000000; /* Black background */
+    color: #FFFFFF; /* White text */
+    text-decoration: none;
+    border-radius: 5px;
+    border: 1px solid #FFFFFF;
+}
+
+.admin-button:hover {
+    background-color: #B6B8BA; /* Grey hover effect */
+}
+
+/* Container */
+.container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin: 20px auto;
+    padding: 20px;
+    width: 90%;
+}
+
+/* Columns */
+.column {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #000000;
+    background-color: #FFFFFF;
+    min-height: 300px; /* Ensure columns have some height */
+}
+
+/* Shared Button Styles */
+button {
+    display: block;
+    background-color: #FFFFFF;
+    color: #000000;
+    text-align: center;
+    padding: 10px;
+    margin-bottom: 10px;
+    text-decoration: none;
+    border-radius: 5px;
+    border: 2px solid #000000; /* Black border around all buttons */
+    cursor: pointer;
+    width: 100%; /* Ensure buttons take up full column width */
+    box-sizing: border-box;
+    font-family: 'Hemi-Head', sans-serif; /* Use Hemi-Head for button text */
+    white-space: nowrap; /* Prevent text wrapping */
+}
+
+/* Manufacturer Button */
+.manufacturer-button {
+    background-color: #F68D23; /* Secondary orange */
+    color: #FFFFFF; /* White text */
+}
+
+.manufacturer-button:hover,
+.manufacturer-button.active {
+    background-color: #EA5725; /* Primary orange hover and active */
+}
+
+/* Controller Button */
+.controller-button {
+    background-color: #5AA946; /* Secondary green */
+    color: #FFFFFF; /* White text */
+}
+
+.controller-button:hover,
+.controller-button.active {
+    background-color: #9EBA3E; /* Lighter green hover and active */
+}
+
+/* Workflow Button */
+.workflow-button {
+    background-color: #FBBE1F; /* Secondary yellow */
+    color: #000000; /* Black text */
+}
+
+.workflow-button:hover,
+.workflow-button.active {
+    background-color: #F68D23; /* Secondary orange hover and active */
+}
+
+/* Footer */
+.footer {
+    background-color: #EA5725; /* Primary orange */
+    color: #FFFFFF; /* White text */
+    text-align: center;
+    padding: 10px;
+    font-family: 'Hemi-Head', sans-serif;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+}

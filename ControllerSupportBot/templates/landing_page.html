@@ -1,99 +1,88 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ControllerApp</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
-        .header {
-            background-color: #EA5725;
-            color: #fff;
-            padding: 20px;
-            text-align: center;
-        }
-        .admin-button {
-            position: absolute;
-            right: 20px;
-            top: 20px;
-            padding: 10px 20px;
-            background-color: #333;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-        }
-        .container {
-            width: 80%;
-            margin: 20px auto;
-            padding: 20px;
-        }
-        .manufacturer-button {
-            display: block;
-            background-color: #F68D23;
-            color: white;
-            text-align: center;
-            padding: 10px;
-            margin-bottom: 10px;
-            text-decoration: none;
-            border-radius: 5px;
-        }
-        .manufacturer-button:hover {
-            background-color: #EA5725;
-        }
-        .controller-section {
-            display: none; /* Initially hidden */
-        }
-        .footer {
-            background-color: #EA5725;
-            color: #fff;
-            text-align: center;
-            padding: 10px;
-            position: fixed;
-            width: 100%;
-            bottom: 0;
-        }
-    </style>
-    <script>
-        function toggleControllers(manufacturerId) {
-            var element = document.getElementById('controllers-' + manufacturerId);
-            element.style.display = (element.style.display === 'none') ? 'block' : 'none';
-        }
-    </script>
+    <link rel="stylesheet" href="{% static 'ControllerSupportBot/css/style.css' %}">
 </head>
 <body>
     <div class="header">
         <h1>Welcome to ControllerApp</h1>
-        <a href="{% url 'admin:index' %}" class="admin-button" target="_blank">Admin Panel</a>
+        <a href="{% url 'admin:index' %}" class="admin-button" target="_blank">Admin</a>
     </div>
 
     <div class="container">
-        {% if manufacturers %}
-            {% for manufacturer in manufacturers %}
-                <button onclick="toggleControllers({{ manufacturer.id }})" class="manufacturer-button">
-                    {{ manufacturer.name }}
-                </button>
-                <div id="controllers-{{ manufacturer.id }}" class="controller-section">
-                    {% if controllers_by_manufacturer|get:manufacturer.id %}
-                        {% for controller in controllers_by_manufacturer|get:manufacturer.id %}
-                            <p>{{ controller.model }}</p>
-                        {% endfor %}
-                    {% else %}
-                        <p>No controllers available.</p>
-                    {% endif %}
-                </div>
-            {% endfor %}
-        {% else %}
-            <p>Database is Empty</p>
-        {% endif %}
+        <div class="column" id="column-1">
+            {% if manufacturers %}
+                {% for manufacturer in manufacturers %}
+                    <button onclick="toggleControllers({{ manufacturer.id }})" class="manufacturer-button">
+                        {{ manufacturer.name }}
+                    </button>
+                {% endfor %}
+            {% else %}
+                <p>Database is Empty</p>
+            {% endif %}
+        </div>
+
+        <div class="column" id="column-2"></div>
+        <div class="column" id="column-3"></div>
     </div>
 
     <div class="footer">
         <p>&copy; 2024 ControllerApp. All rights reserved.</p>
     </div>
+
+    <!-- Add your JavaScript right before the closing body tag -->
+    <script>
+        function toggleControllers(manufacturerId) {
+            var column2 = document.getElementById('column-2');
+            var column3 = document.getElementById('column-3');
+            column2.innerHTML = ''; // Clear previous controllers
+            column3.innerHTML = ''; // Clear previous workflows
+
+            var controllers = document.getElementById('controllers-' + manufacturerId);
+            if (controllers) {
+                column2.innerHTML = controllers.innerHTML;
+            } else {
+                // Fetch and display controllers
+                // Assuming you're passing controllers in some way
+                var newHtml = '';
+                {% for manufacturer in manufacturers %}
+                    if ({{ manufacturer.id }} == manufacturerId) {
+                        {% for controller in manufacturer.controllers.all %}
+                            newHtml += `<button onclick="toggleWorkflows({{ controller.id }})" class="controller-button">{{ controller.model }}</button>`;
+                        {% endfor %}
+                    }
+                {% endfor %}
+                column2.innerHTML = newHtml;
+            }
+        }
+
+        function toggleWorkflows(controllerId) {
+            var column3 = document.getElementById('column-3');
+            column3.innerHTML = ''; // Clear previous workflows
+
+            var workflows = document.getElementById('workflows-' + controllerId);
+            if (workflows) {
+                column3.innerHTML = workflows.innerHTML;
+            } else {
+                // Fetch and display workflows
+                // Assuming you're passing workflows in some way
+                var newHtml = '';
+                {% for manufacturer in manufacturers %}
+                    {% for controller in manufacturer.controllers.all %}
+                        if ({{ controller.id }} == controllerId) {
+                            {% for workflow in controller.support_workflows.all %}
+                                newHtml += `<button class="workflow-button">{{ workflow.question }}</button>`;
+                            {% endfor %}
+                        }
+                    {% endfor %}
+                {% endfor %}
+                column3.innerHTML = newHtml;
+            }
+        }
+    </script>
 </body>
 </html>
