@@ -39,15 +39,24 @@
         function toggleControllers(manufacturerId) {
             var column2 = document.getElementById('column-2');
             var column3 = document.getElementById('column-3');
-            column2.innerHTML = ''; // Clear previous controllers
             column3.innerHTML = ''; // Clear previous workflows
 
-            var controllers = document.getElementById('controllers-' + manufacturerId);
-            if (controllers) {
-                column2.innerHTML = controllers.innerHTML;
+            var clickedButton = event.target;
+
+            // Check if the button was already active
+            var isActive = clickedButton.classList.contains('active');
+
+            // Reset all manufacturer buttons
+            var allManufacturerButtons = document.querySelectorAll('.manufacturer-button');
+            allManufacturerButtons.forEach(function(button) {
+                button.classList.remove('active');
+            });
+
+            if (isActive) {
+                column2.innerHTML = ''; // Clear controllers column
             } else {
-                // Fetch and display controllers
-                // Assuming you're passing controllers in some way
+                clickedButton.classList.add('active'); // Set the clicked button to active
+
                 var newHtml = '';
                 {% for manufacturer in manufacturers %}
                     if ({{ manufacturer.id }} == manufacturerId) {
@@ -62,14 +71,23 @@
 
         function toggleWorkflows(controllerId) {
             var column3 = document.getElementById('column-3');
-            column3.innerHTML = ''; // Clear previous workflows
 
-            var workflows = document.getElementById('workflows-' + controllerId);
-            if (workflows) {
-                column3.innerHTML = workflows.innerHTML;
+            var clickedButton = event.target;
+
+            // Check if the button was already active
+            var isActive = clickedButton.classList.contains('active');
+
+            // Reset all controller buttons
+            var allControllerButtons = document.querySelectorAll('.controller-button');
+            allControllerButtons.forEach(function(button) {
+                button.classList.remove('active');
+            });
+
+            if (isActive) {
+                column3.innerHTML = ''; // Clear workflows column
             } else {
-                // Fetch and display workflows
-                // Assuming you're passing workflows in some way
+                clickedButton.classList.add('active'); // Set the clicked button to active
+
                 var newHtml = '';
                 {% for manufacturer in manufacturers %}
                     {% for controller in manufacturer.controllers.all %}
@@ -84,5 +102,6 @@
             }
         }
     </script>
+
 </body>
 </html>
