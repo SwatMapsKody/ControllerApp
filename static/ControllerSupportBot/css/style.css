@@ -110,6 +110,27 @@ button {
     background-color: #9EBA3E; /* Lighter green hover and active */
 }
 
+/* Version Button */
+.version-button {
+    background-color: #FBBE1F; /* Secondary yellow */
+    color: #000000; /* Black text */
+    border: 2px solid #000000; /* Black border around all buttons */
+    text-align: center;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%; /* Ensure buttons take up full column width */
+    box-sizing: border-box;
+    font-family: 'Hemi-Head', sans-serif; /* Use Hemi-Head for button text */
+    white-space: nowrap; /* Prevent text wrapping */
+}
+
+.version-button:hover,
+.version-button.active {
+    background-color: #F68D23; /* Secondary orange hover and active */
+}
+
 /* Workflow Button */
 .workflow-button {
     background-color: #FBBE1F; /* Secondary yellow */

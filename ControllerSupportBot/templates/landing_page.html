@@ -1,41 +1,34 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ControllerApp</title>
-    <link rel="stylesheet" href="{% static 'ControllerSupportBot/css/style.css' %}">
-</head>
-<body>
-    <div class="header">
-        <h1>Welcome to ControllerApp</h1>
-        <a href="{% url 'admin:index' %}" class="admin-button" target="_blank">Admin</a>
-    </div>
+{% extends 'base_template.html' %}
 
-    <div class="container">
-        <div class="column" id="column-1">
-            {% if manufacturers %}
-                {% for manufacturer in manufacturers %}
-                    <button onclick="toggleControllers({{ manufacturer.id }})" class="manufacturer-button">
-                        {{ manufacturer.name }}
-                    </button>
-                {% endfor %}
-            {% else %}
-                <p>Database is Empty</p>
-            {% endif %}
-        </div>
+{% block title %}
+Landing Page - ControllerApp
+{% endblock %}
 
-        <div class="column" id="column-2"></div>
-        <div class="column" id="column-3"></div>
-    </div>
+{% block header %}
+Welcome to the ControllerApp Landing Page
+{% endblock %}
 
-    <div class="footer">
-        <p>&copy; 2024 ControllerApp. All rights reserved.</p>
-    </div>
+{% block content %}
+<div class="column" id="column-1">
+    {% if manufacturers %}
+        {% for manufacturer in manufacturers %}
+            <!-- Manufacturer Button -->
+            <button onclick="toggleControllers({{ manufacturer.id }})" class="manufacturer-button">
+                {{ manufacturer.name }}
+            </button>
+        {% endfor %}
+    {% else %}
+        <p>Database is Empty</p>
+    {% endif %}
+</div>
 
-    <!-- Add your JavaScript right before the closing body tag -->
-    <script>
+<!-- Column for Controllers -->
+<div class="column" id="column-2"></div>
+
+<!-- Column for Versions and Workflows -->
+<div class="column" id="column-3"></div>
+
+<script>
         function toggleControllers(manufacturerId) {
             var column2 = document.getElementById('column-2');
             var column3 = document.getElementById('column-3');
@@ -58,6 +51,7 @@
                 clickedButton.classList.add('active'); // Set the clicked button to active
 
                 var newHtml = '';
+                // Assume manufacturers is passed or available
                 {% for manufacturer in manufacturers %}
                     if ({{ manufacturer.id }} == manufacturerId) {
                         {% for controller in manufacturer.controllers.all %}
@@ -136,7 +130,5 @@
                 column3.innerHTML += newHtml;
             }
         }
-    </script>
-
-</body>
-</html>
+</script>
+{% endblock %}
