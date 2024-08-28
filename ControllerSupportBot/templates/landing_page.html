@@ -9,112 +9,98 @@ Welcome to the ControllerApp Landing Page
 {% endblock %}
 
 {% block content %}
-<div class="column" id="column-1">
-    {% if manufacturers %}
-        {% for manufacturer in manufacturers %}
-            <button onclick="toggleControllers({{ manufacturer.id }})" class="manufacturer-button">
-                {{ manufacturer.name }}
-            </button>
-        {% endfor %}
-    {% else %}
-        <p>Database is Empty</p>
-    {% endif %}
+<div class="primary-columns-container">
+    <div class="column" id="column-1">
+        {% if manufacturers %}
+            {% for manufacturer in manufacturers %}
+                <!-- Manufacturer Button -->
+                <button onclick="loadControllers({{ manufacturer.id }})" class="manufacturer-button">
+                    {{ manufacturer.name }}
+                </button>
+            {% endfor %}
+        {% else %}
+            <p>Database is Empty</p>
+        {% endif %}
+    </div>
+
+    <!-- Column for Controllers -->
+    <div class="column" id="column-2"></div>
+
+    <!-- Column for Versions and Workflows -->
+    <div class="column" id="column-3"></div>
 </div>
 
-<div class="column" id="column-2"></div>
-<div class="column" id="column-3"></div>
+<!-- New Section for Selected Version -->
+<div class="workflow-section" id="workflow-container" style="display: none;">
+    <div class="workflow-header">
+        <h2 id="workflow-title"></h2>
+    </div>
+    <div class="workflow-columns">
+        <div class="workflow-column" id="workflow-column-1"></div>
+        <div class="workflow-column" id="workflow-column-2"></div>
+    </div>
+</div>
 {% endblock %}
 
 {% block scripts %}
     {{ block.super }}
     <script>
-        function toggleControllers(manufacturerId) {
-            var column2 = document.getElementById('column-2');
-            var column3 = document.getElementById('column-3');
-            column3.innerHTML = '';
-
-            var clickedButton = event.target;
-            var isActive = clickedButton.classList.contains('active');
-
-            var allManufacturerButtons = document.querySelectorAll('.manufacturer-button');
-            allManufacturerButtons.forEach(function(button) {
-                button.classList.remove('active');
+        function loadControllers(manufacturerId) {
+            const manufacturerName = $('button[onclick="loadControllers(' + manufacturerId + ')"]').text().trim();
+            $.ajax({
+                url: `/controllers/${manufacturerId}/`,
+                method: 'GET',
+                success: function(data) {
+                    let html = '';
+                    data.forEach(controller => {
+                        // Use JSON.stringify to handle special characters correctly
+                        const controllerModel = JSON.stringify(controller.model).slice(1, -1); // Remove quotes added by JSON.stringify
+                        html += `<button onclick="loadVersions(${controller.id}, '${manufacturerName.replace(/'/g, "\\'")}', '${controllerModel.replace(/'/g, "\\'")}')" class="controller-button">${controller.model}</button>`;
+                    });
+                    $('#column-2').html(html);
+                    $('#column-3').html(''); // Clear versions column
+                    $('#workflow-container').hide(); // Hide workflow section
+                }
             });
-
-            if (isActive) {
-                column2.innerHTML = '';
-            } else {
-                clickedButton.classList.add('active');
-                var newHtml = '';
-                {% for manufacturer in manufacturers %}
-                    if ({{ manufacturer.id }} == manufacturerId) {
-                        {% for controller in manufacturer.controllers.all %}
-                            newHtml += `<button onclick="toggleVersions({{ controller.id }})" class="controller-button">{{ controller.model }}</button>`;
-                        {% endfor %}
-                    }
-                {% endfor %}
-                column2.innerHTML = newHtml;
-            }
         }
 
-        function toggleVersions(controllerId) {
-            var column3 = document.getElementById('column-3');
-            column3.innerHTML = '';
-
-            var clickedButton = event.target;
-            var isActive = clickedButton.classList.contains('active');
-
-            var allControllerButtons = document.querySelectorAll('.controller-button');
-            allControllerButtons.forEach(function(button) {
-                button.classList.remove('active');
+        function loadVersions(controllerId, manufacturerName, controllerModel) {
+            $.ajax({
+                url: `/versions/${controllerId}/`,
+                method: 'GET',
+                success: function(data) {
+                    let html = '';
+                    data.forEach(version => {
+                        // Use JSON.stringify to handle special characters correctly
+                        const versionName = JSON.stringify(version.version).slice(1, -1); // Remove quotes added by JSON.stringify
+                        html += `<button onclick="loadWorkflows(${version.id}, '${manufacturerName.replace(/'/g, "\\'")}', '${controllerModel.replace(/'/g, "\\'")}', '${versionName.replace(/'/g, "\\'")}')" class="version-button">${version.version}</button>`;
+                    });
+                    $('#column-3').html(html);
+                    $('#workflow-container').hide(); // Hide workflow section
+                }
             });
-
-            if (isActive) {
-                column3.innerHTML = '';
-            } else {
-                clickedButton.classList.add('active');
-                var newHtml = '';
-                {% for manufacturer in manufacturers %}
-                    {% for controller in manufacturer.controllers.all %}
-                        if ({{ controller.id }} == controllerId) {
-                            {% for version in controller.versions.all %}
-                                newHtml += `<button onclick="toggleWorkflows({{ version.id }})" class="version-button">{{ version.version }}</button>`;
-                            {% endfor %}
-                        }
-                    {% endfor %}
-                {% endfor %}
-                column3.innerHTML = newHtml;
-            }
         }
 
-        function toggleWorkflows(versionId) {
-            var column3 = document.getElementById('column-3');
-            var clickedButton = event.target;
-            var isActive = clickedButton.classList.contains('active');
-
-            var allVersionButtons = document.querySelectorAll('.version-button');
-            allVersionButtons.forEach(function(button) {
-                button.classList.remove('active');
+        function loadWorkflows(versionId, manufacturerName, controllerName, versionName) {
+            $.ajax({
+                url: `/workflows/${versionId}/`,
+                method: 'GET',
+                success: function(data) {
+                    let html = '';
+                    data.forEach(workflow => {
+                        html += `<button onclick="showAnswer('${workflow.answer.replace(/'/g, "\\'")}')" class="workflow-button">${workflow.question}</button>`;
+                    });
+                    $('#workflow-column-1').html(html);
+                    $('#workflow-column-2').html(''); // Clear previous answer
+                    $('#workflow-title').text(`${manufacturerName}  ${controllerName}  ${versionName}`);
+                    $('#workflow-container').show(); // Show workflow section
+                }
             });
+        }
 
-            if (isActive) {
-                column3.innerHTML = '';
-            } else {
-                clickedButton.classList.add('active');
-                var newHtml = '';
-                {% for manufacturer in manufacturers %}
-                    {% for controller in manufacturer.controllers.all %}
-                        {% for version in controller.versions.all %}
-                            if ({{ version.id }} == versionId) {
-                                {% for workflow in version.support_workflows.all %}
-                                    newHtml += `<button class="workflow-button">{{ workflow.question }}</button>`;
-                                {% endfor %}
-                            }
-                        {% endfor %}
-                    {% endfor %}
-                {% endfor %}
-                column3.innerHTML += newHtml;
-            }
+        function showAnswer(answer) {
+            $('#workflow-column-2').html(`<div class="answer-content">${answer}</div>`);
         }
     </script>
 {% endblock %}
+

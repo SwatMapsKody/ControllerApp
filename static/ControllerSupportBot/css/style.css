@@ -50,15 +50,16 @@ body {
     background-color: #B6B8BA; /* Grey hover effect */
 }
 
-/* Container */
-.container {
+/* Container for Primary Columns */
+.primary-columns-container {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
-    align-items: flex-start;
+    gap: 20px; /* Add some space between the primary columns */
     margin: 20px auto;
     padding: 20px;
     width: 90%;
+    background-color: #FFFFFF; /* White background */
+    border: 1px solid #000000; /* Black border */
 }
 
 /* Columns */
@@ -129,6 +130,46 @@ button {
 .version-button:hover,
 .version-button.active {
     background-color: #F68D23; /* Secondary orange hover and active */
+}
+
+/* Workflow Section */
+.workflow-section {
+    margin-top: 30px; /* Space between the primary columns and the workflow section */
+    padding: 20px;
+    background-color: #f9f9f9; /* Very light grey background */
+    border: 2px solid #cccccc; /* Thicker border for distinction */
+    border-radius: 5px;
+}
+
+.workflow-header {
+    text-align: center;
+    margin-bottom: 20px; /* Space between the title and the workflow columns */
+}
+
+.workflow-columns {
+    display: flex;
+    gap: 20px; /* Space between the workflow question and answer columns */
+}
+
+.workflow-column {
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+#workflow-column-1 {
+    width: 33%;
+}
+
+#workflow-column-2 {
+    width: 67%;
+    border-left: 2px solid #cccccc;
+}
+
+.answer-content {
+    padding: 15px;
+    background-color: #ffffff;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
 }
 
 /* Workflow Button */
