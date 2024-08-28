@@ -12,7 +12,6 @@ Welcome to the ControllerApp Landing Page
 <div class="column" id="column-1">
     {% if manufacturers %}
         {% for manufacturer in manufacturers %}
-            <!-- Manufacturer Button -->
             <button onclick="toggleControllers({{ manufacturer.id }})" class="manufacturer-button">
                 {{ manufacturer.name }}
             </button>
@@ -22,36 +21,31 @@ Welcome to the ControllerApp Landing Page
     {% endif %}
 </div>
 
-<!-- Column for Controllers -->
 <div class="column" id="column-2"></div>
-
-<!-- Column for Versions and Workflows -->
 <div class="column" id="column-3"></div>
+{% endblock %}
 
-<script>
+{% block scripts %}
+    {{ block.super }}
+    <script>
         function toggleControllers(manufacturerId) {
             var column2 = document.getElementById('column-2');
             var column3 = document.getElementById('column-3');
-            column3.innerHTML = ''; // Clear previous workflows
+            column3.innerHTML = '';
 
             var clickedButton = event.target;
-
-            // Check if the button was already active
             var isActive = clickedButton.classList.contains('active');
 
-            // Reset all manufacturer buttons
             var allManufacturerButtons = document.querySelectorAll('.manufacturer-button');
             allManufacturerButtons.forEach(function(button) {
                 button.classList.remove('active');
             });
 
             if (isActive) {
-                column2.innerHTML = ''; // Clear controllers column
+                column2.innerHTML = '';
             } else {
-                clickedButton.classList.add('active'); // Set the clicked button to active
-
+                clickedButton.classList.add('active');
                 var newHtml = '';
-                // Assume manufacturers is passed or available
                 {% for manufacturer in manufacturers %}
                     if ({{ manufacturer.id }} == manufacturerId) {
                         {% for controller in manufacturer.controllers.all %}
@@ -65,24 +59,20 @@ Welcome to the ControllerApp Landing Page
 
         function toggleVersions(controllerId) {
             var column3 = document.getElementById('column-3');
-            column3.innerHTML = ''; // Clear previous workflows
+            column3.innerHTML = '';
 
             var clickedButton = event.target;
-
-            // Check if the button was already active
             var isActive = clickedButton.classList.contains('active');
 
-            // Reset all controller buttons
             var allControllerButtons = document.querySelectorAll('.controller-button');
             allControllerButtons.forEach(function(button) {
                 button.classList.remove('active');
             });
 
             if (isActive) {
-                column3.innerHTML = ''; // Clear versions column
+                column3.innerHTML = '';
             } else {
-                clickedButton.classList.add('active'); // Set the clicked button to active
-
+                clickedButton.classList.add('active');
                 var newHtml = '';
                 {% for manufacturer in manufacturers %}
                     {% for controller in manufacturer.controllers.all %}
@@ -100,21 +90,17 @@ Welcome to the ControllerApp Landing Page
         function toggleWorkflows(versionId) {
             var column3 = document.getElementById('column-3');
             var clickedButton = event.target;
-
-            // Check if the button was already active
             var isActive = clickedButton.classList.contains('active');
 
-            // Reset all version buttons
             var allVersionButtons = document.querySelectorAll('.version-button');
             allVersionButtons.forEach(function(button) {
                 button.classList.remove('active');
             });
 
             if (isActive) {
-                column3.innerHTML = ''; // Clear workflows column
+                column3.innerHTML = '';
             } else {
-                clickedButton.classList.add('active'); // Set the clicked button to active
-
+                clickedButton.classList.add('active');
                 var newHtml = '';
                 {% for manufacturer in manufacturers %}
                     {% for controller in manufacturer.controllers.all %}
@@ -130,5 +116,5 @@ Welcome to the ControllerApp Landing Page
                 column3.innerHTML += newHtml;
             }
         }
-</script>
+    </script>
 {% endblock %}
