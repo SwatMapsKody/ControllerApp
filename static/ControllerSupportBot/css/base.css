@@ -1,0 +1,33 @@
+/* base.css */
+
+/* Font Definitions */
+@font-face {
+    font-family: 'Hemi-Head';
+    src: url('{% static "fonts/hemi-head.ttf" %}') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    font-family: 'Myriad Pro', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #F4F4F4; /* Light grey background */
+}
+
+button {
+    display: block;
+    background-color: #FFFFFF;
+    color: #000000;
+    text-align: center;
+    padding: 10px;
+    margin-bottom: 10px;
+    text-decoration: none;
+    border-radius: 5px;
+    border: 2px solid #000000; /* Black border around all buttons */
+    cursor: pointer;
+    width: 100%; /* Ensure buttons take up full column width */
+    box-sizing: border-box;
+    font-family: 'Hemi-Head', sans-serif; /* Use Hemi-Head for button text */
+    white-space: nowrap; /* Prevent text wrapping */
+}

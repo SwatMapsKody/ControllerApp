@@ -1,0 +1,42 @@
+/* layout.css */
+
+/* Header */
+.header {
+    background-color: #EA5725; /* Primary orange */
+    color: #FFFFFF; /* White text */
+    padding: 20px;
+    text-align: center;
+}
+
+.header h1 {
+    font-family: 'Hemi-Head', sans-serif;
+}
+
+/* Container */
+.primary-columns-container {
+    display: flex;
+    margin: 20px auto;
+    padding: 20px;
+    width: 90%;
+    justify-content: space-between;
+}
+
+.column {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #000000;
+    background-color: #FFFFFF;
+    min-height: 300px; /* Ensure columns have some height */
+    box-sizing: border-box;
+}
+
+/* Footer */
+.footer {
+    background-color: #EA5725; /* Primary orange */
+    color: #FFFFFF; /* White text */
+    text-align: center;
+    font-family: 'Hemi-Head', sans-serif;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+}

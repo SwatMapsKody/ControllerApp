@@ -1,0 +1,99 @@
+/* buttons.css */
+
+
+/* Admin Button */
+.admin-button {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    padding: 10px 20px;
+    background-color: #000000; /* Black background */
+    color: #FFFFFF; /* White text */
+    text-decoration: none;
+    border-radius: 5px;
+    border: 1px solid #FFFFFF;
+}
+
+/* Manufacturer Button */
+.manufacturer-button {
+    background-color: #F68D23; /* Secondary orange */
+    color: #FFFFFF; /* White text */
+}
+
+.manufacturer-button:hover,
+.manufacturer-button.active {
+    background-color: #EA5725; /* Primary orange hover and active */
+}
+
+/* Controller Button */
+.controller-button {
+    background-color: #5AA946; /* Secondary green */
+    color: #FFFFFF; /* White text */
+}
+
+.controller-button:hover,
+.controller-button.active {
+    background-color: #9EBA3E; /* Lighter green hover and active */
+}
+
+/* Version Button */
+.version-button {
+    background-color: #FBBE1F; /* Secondary yellow */
+    color: #000000; /* Black text */
+}
+
+.version-button:hover,
+.version-button.active {
+    background-color: #F68D23; /* Secondary orange hover and active */
+}
+
+/* Workflow Button */
+.workflow-button {
+    background-color: #FBBE1F; /* Secondary yellow */
+    color: #000000; /* Black text */
+    text-align: left;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    box-sizing: border-box;
+    font-family: 'Hemi-Head', sans-serif;
+    white-space: normal; /* Allow text to wrap within the button */
+    overflow-wrap: break-word; /* Break long words to prevent overflow */
+}
+
+.workflow-button:hover,
+.workflow-button.active {
+    background-color: #F68D23; /* Secondary orange hover and active */
+}
+
+/* Scroll to Top Button */
+#scroll-top-button {
+    display: none;
+    position: fixed;
+    bottom: 70px; /* Positioned above the footer */
+    left: 30%; /* Center horizontally relative to the entire page */
+    transform: translateX(-50%);
+    width: 60px;
+    height: 60px;
+    z-index: 100; /* Ensure it appears above other elements */
+    background-color: #EA5725; /* Primary orange */
+    color: #FFFFFF; /* White text */
+    border: none;
+    border-radius: 10px; /* Rounded corners */
+    text-align: center;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#scroll-top-button i {
+    font-size: 30px;
+}
+
+#scroll-top-button:hover {
+    background-color: #F68D23; /* Secondary orange on hover */
+}
