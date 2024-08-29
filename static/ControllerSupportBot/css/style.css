@@ -184,6 +184,24 @@ button {
     background-color: #F68D23; /* Secondary orange hover and active */
 }
 
+.farm-name {
+    margin-bottom: 15px; /* Space below the input box */
+    margin-left: 10px;
+}
+
+.farm-name label {
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+#farm-name-input {
+    width: 60%; /* Full width */
+    padding: 8px;
+    border: 1px solid #cccccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
 /* Footer */
 .footer {
     background-color: #EA5725; /* Primary orange */

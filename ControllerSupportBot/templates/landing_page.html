@@ -14,7 +14,7 @@ Welcome to the ControllerApp Landing Page
         {% if manufacturers %}
             {% for manufacturer in manufacturers %}
                 <!-- Manufacturer Button -->
-                <button onclick="loadControllers({{ manufacturer.id }})" class="manufacturer-button">
+                <button onclick="loadControllers({{ manufacturer.id }}, '{{ manufacturer.name }}')" class="manufacturer-button">
                     {{ manufacturer.name }}
                 </button>
             {% endfor %}
@@ -45,17 +45,15 @@ Welcome to the ControllerApp Landing Page
 {% block scripts %}
     {{ block.super }}
     <script>
-        function loadControllers(manufacturerId) {
-            const manufacturerName = $('button[onclick="loadControllers(' + manufacturerId + ')"]').text().trim();
+        function loadControllers(manufacturerId, manufacturerName) {
             $.ajax({
                 url: `/controllers/${manufacturerId}/`,
                 method: 'GET',
                 success: function(data) {
                     let html = '';
                     data.forEach(controller => {
-                        // Use JSON.stringify to handle special characters correctly
-                        const controllerModel = JSON.stringify(controller.model).slice(1, -1); // Remove quotes added by JSON.stringify
-                        html += `<button onclick="loadVersions(${controller.id}, '${manufacturerName.replace(/'/g, "\\'")}', '${controllerModel.replace(/'/g, "\\'")}')" class="controller-button">${controller.model}</button>`;
+                        // Pass the manufacturerName correctly along with controllerId and model
+                        html += `<button onclick="loadVersions(${controller.id}, '${controller.model}', '${manufacturerName}')" class="controller-button">${controller.model}</button>`;
                     });
                     $('#column-2').html(html);
                     $('#column-3').html(''); // Clear versions column
@@ -64,16 +62,15 @@ Welcome to the ControllerApp Landing Page
             });
         }
 
-        function loadVersions(controllerId, manufacturerName, controllerModel) {
+        function loadVersions(controllerId, controllerModel, manufacturerName) {
             $.ajax({
                 url: `/versions/${controllerId}/`,
                 method: 'GET',
                 success: function(data) {
                     let html = '';
                     data.forEach(version => {
-                        // Use JSON.stringify to handle special characters correctly
-                        const versionName = JSON.stringify(version.version).slice(1, -1); // Remove quotes added by JSON.stringify
-                        html += `<button onclick="loadWorkflows(${version.id}, '${manufacturerName.replace(/'/g, "\\'")}', '${controllerModel.replace(/'/g, "\\'")}', '${versionName.replace(/'/g, "\\'")}')" class="version-button">${version.version}</button>`;
+                        // Pass the correct manufacturerName along with version details
+                        html += `<button onclick="loadWorkflows(${version.id}, '${manufacturerName}', '${controllerModel}', '${version.version}')" class="version-button">${version.version}</button>`;
                     });
                     $('#column-3').html(html);
                     $('#workflow-container').hide(); // Hide workflow section
@@ -88,19 +85,44 @@ Welcome to the ControllerApp Landing Page
                 success: function(data) {
                     let html = '';
                     data.forEach(workflow => {
-                        html += `<button onclick="showAnswer('${workflow.answer.replace(/'/g, "\\'")}')" class="workflow-button">${workflow.question}</button>`;
+                        html += `<button onclick="showAnswer('${workflow.question}', '${workflow.answer}')" class="workflow-button">${workflow.question}</button>`;
                     });
                     $('#workflow-column-1').html(html);
-                    $('#workflow-column-2').html(''); // Clear previous answer
-                    $('#workflow-title').text(`${manufacturerName}  ${controllerName}  ${versionName}`);
+                    $('#workflow-column-2').html(''); // Clear previous answers
+                    // Display the correct title with manufacturerName, controllerName, and versionName
+                    $('#workflow-title').text(`${manufacturerName} - ${controllerName} - ${versionName}`);
                     $('#workflow-container').show(); // Show workflow section
+
+                    // Check if the farm name input box already exists
+                    if ($('#farm-name-input').length === 0) {
+                        $('#workflow-column-2').append(`
+                            <div class="farm-name">
+                                <input type="text" id="farm-name-input" placeholder="Farm Name" oninput="updateFarmName(this.value)">
+                            </div>
+                            <div id="farm-name-display"></div>
+                        `);
+                    }
                 }
             });
         }
 
-        function showAnswer(answer) {
-            $('#workflow-column-2').html(`<div class="answer-content">${answer}</div>`);
+
+        function updateFarmName(farmName) {
+            // Update the content to include the farm name dynamically
+            $('#farm-name-display').html(`<strong>Farm Name:</strong> ${farmName}`);
+        }
+
+        function showAnswer(question, answer) {
+            // Append the question and answer to the existing content
+            $('#workflow-column-2').append(`
+                <div class="answer-content">
+                    <strong>Question:</strong> ${question}
+                    <br>
+                    <strong>Answer:</strong> ${answer}
+                </div>
+            `);
         }
     </script>
+
 {% endblock %}
 
