@@ -1,0 +1,6 @@
+{% for controller in controllers %}
+    <button class="controller-button"
+            data-url="{% url 'load_versions' controller.id %}">
+        {{ controller.model }}
+    </button>
+{% endfor %}

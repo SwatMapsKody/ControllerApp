@@ -202,6 +202,43 @@ button {
     box-sizing: border-box;
 }
 
+/* Scroll to Top Button */
+#scroll-top-button {
+    display: none; /* Initially hidden */
+    position: fixed;
+    bottom: 70px; /* Positioned above the footer */
+    left: 30%; /* Center horizontally relative to the entire page */
+    transform: translateX(-50%); /* Offset by half of the button's width to truly center it */
+    width: 60px; /* Button width */
+    height: 60px; /* Button height */
+    z-index: 100; /* Ensure it appears above other elements */
+    background-color: #EA5725; /* Primary orange */
+    color: #FFFFFF; /* White text */
+    border: none;
+    border-radius: 10px; /* Rounded corners */
+    text-align: center;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    display: flex; /* Use flexbox for centering */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+}
+
+/* Icon inside the button */
+#scroll-top-button i {
+    font-size: 30px; /* Adjust arrow size */
+}
+
+#scroll-top-button:hover {
+    background-color: #F68D23; /* Secondary orange on hover */
+}
+
+
+
+
+
+
+
 /* Footer */
 .footer {
     background-color: #EA5725; /* Primary orange */

@@ -1,0 +1,7 @@
+{% for workflow in workflows %}
+    <button class="workflow-button"
+            data-question="{{ workflow.question|escapejs }}"
+            data-answer="{{ workflow.answer|escapejs }}">
+        {{ workflow.question }}
+    </button>
+{% endfor %}

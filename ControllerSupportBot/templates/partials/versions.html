@@ -1,0 +1,6 @@
+{% for version in versions %}
+    <button class="version-button"
+            data-url="{% url 'load_workflows' version.id %}">
+        {{ version.version }}
+    </button>
+{% endfor %}

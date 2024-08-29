@@ -11,118 +11,124 @@ Welcome to the ControllerApp Landing Page
 {% block content %}
 <div class="primary-columns-container">
     <div class="column" id="column-1">
-        {% if manufacturers %}
-            {% for manufacturer in manufacturers %}
-                <!-- Manufacturer Button -->
-                <button onclick="loadControllers({{ manufacturer.id }}, '{{ manufacturer.name }}')" class="manufacturer-button">
-                    {{ manufacturer.name }}
-                </button>
-            {% endfor %}
-        {% else %}
-            <p>Database is Empty</p>
-        {% endif %}
+        {% for manufacturer in manufacturers %}
+            <!-- Manufacturer Button -->
+            <button class="manufacturer-button"
+                    data-url="{% url 'load_controllers' manufacturer.id %}">
+                {{ manufacturer.name }}
+            </button>
+        {% endfor %}
     </div>
 
-    <!-- Column for Controllers -->
+    <!-- Columns for controllers, versions, and workflows -->
     <div class="column" id="column-2"></div>
-
-    <!-- Column for Versions and Workflows -->
     <div class="column" id="column-3"></div>
 </div>
 
-<!-- New Section for Selected Version -->
+<!-- Section for Selected Version's Workflow -->
 <div class="workflow-section" id="workflow-container" style="display: none;">
     <div class="workflow-header">
         <h2 id="workflow-title"></h2>
     </div>
     <div class="workflow-columns">
         <div class="workflow-column" id="workflow-column-1"></div>
-        <div class="workflow-column" id="workflow-column-2"></div>
+        <div class="workflow-column" id="workflow-column-2">
+            <!-- Input for Farm Name -->
+            <input type="text" id="farm-name-input" placeholder="Farm Name">
+            <div id="farm-name-display"></div>
+        </div>
     </div>
 </div>
+
+<!-- Scroll to Top Button -->
+<button id="scroll-top-button"><i class="fa fa-arrow-up"></i></button>
 {% endblock %}
 
 {% block scripts %}
     {{ block.super }}
     <script>
-        function loadControllers(manufacturerId, manufacturerName) {
-            $.ajax({
-                url: `/controllers/${manufacturerId}/`,
-                method: 'GET',
-                success: function(data) {
-                    let html = '';
-                    data.forEach(controller => {
-                        // Pass the manufacturerName correctly along with controllerId and model
-                        html += `<button onclick="loadVersions(${controller.id}, '${controller.model}', '${manufacturerName}')" class="controller-button">${controller.model}</button>`;
-                    });
-                    $('#column-2').html(html);
-                    $('#column-3').html(''); // Clear versions column
-                    $('#workflow-container').hide(); // Hide workflow section
-                }
+        // Generic function to handle AJAX loading of content into specified target element
+        function loadContent(url, target) {
+            $.get(url, function(data) {
+                $(target).html(data); // Insert the loaded data into the target element
             });
         }
 
-        function loadVersions(controllerId, controllerModel, manufacturerName) {
-            $.ajax({
-                url: `/versions/${controllerId}/`,
-                method: 'GET',
-                success: function(data) {
-                    let html = '';
-                    data.forEach(version => {
-                        // Pass the correct manufacturerName along with version details
-                        html += `<button onclick="loadWorkflows(${version.id}, '${manufacturerName}', '${controllerModel}', '${version.version}')" class="version-button">${version.version}</button>`;
-                    });
-                    $('#column-3').html(html);
-                    $('#workflow-container').hide(); // Hide workflow section
-                }
+        // Event handler for Manufacturer Button click
+        $('.manufacturer-button').on('click', function () {
+            const url = $(this).data('url'); // Get the URL from the button's data-url attribute
+            loadContent(url, '#column-2'); // Load controllers into column-2
+            $('#column-3').html('');  // Clear versions column (column-3)
+            $('#workflow-container').hide();  // Hide workflow section
+        });
+
+        // Function to handle click events for dynamically loaded Controller and Version buttons
+        function handleDynamicContentLoading() {
+            // Controller Button click handler
+            $('#column-2').on('click', '.controller-button', function () {
+                const url = $(this).data('url'); // Get the URL from the button's data-url attribute
+                loadContent(url, '#column-3'); // Load versions into column-3
+                $('#workflow-container').hide();  // Hide workflow section
+            });
+
+            // Version Button click handler
+            $('#column-3').on('click', '.version-button', function () {
+                const url = $(this).data('url'); // Get the URL from the button's data-url attribute
+                loadContent(url, '#workflow-column-1'); // Load workflows into workflow-column-1
+                $('#workflow-container').show();  // Show workflow section
             });
         }
 
-        function loadWorkflows(versionId, manufacturerName, controllerName, versionName) {
-            $.ajax({
-                url: `/workflows/${versionId}/`,
-                method: 'GET',
-                success: function(data) {
-                    let html = '';
-                    data.forEach(workflow => {
-                        html += `<button onclick="showAnswer('${workflow.question}', '${workflow.answer}')" class="workflow-button">${workflow.question}</button>`;
-                    });
-                    $('#workflow-column-1').html(html);
-                    $('#workflow-column-2').html(''); // Clear previous answers
-                    // Display the correct title with manufacturerName, controllerName, and versionName
-                    $('#workflow-title').text(`${manufacturerName} - ${controllerName} - ${versionName}`);
-                    $('#workflow-container').show(); // Show workflow section
+        // Call the function to handle dynamic content loading
+        handleDynamicContentLoading();
 
-                    // Check if the farm name input box already exists
-                    if ($('#farm-name-input').length === 0) {
-                        $('#workflow-column-2').append(`
-                            <div class="farm-name">
-                                <input type="text" id="farm-name-input" placeholder="Farm Name" oninput="updateFarmName(this.value)">
-                            </div>
-                            <div id="farm-name-display"></div>
-                        `);
-                    }
-                }
-            });
-        }
+        // Event handler for Workflow Question button clicks
+        $('#workflow-column-1').on('click', '.workflow-button', function () {
+            const question = $(this).data('question'); // Get question text from data-question attribute
+            const answer = $(this).data('answer'); // Get answer text from data-answer attribute
+            const farmName = $('#farm-name-input').val(); // Get the value of the Farm Name input
+            const farmNameDisplay = farmName ? `<strong>Farm Name:</strong> ${farmName}<br>` : '';
 
-
-        function updateFarmName(farmName) {
-            // Update the content to include the farm name dynamically
-            $('#farm-name-display').html(`<strong>Farm Name:</strong> ${farmName}`);
-        }
-
-        function showAnswer(question, answer) {
-            // Append the question and answer to the existing content
+            // Append the question and answer to workflow-column-2
             $('#workflow-column-2').append(`
                 <div class="answer-content">
-                    <strong>Question:</strong> ${question}
-                    <br>
+                    ${farmNameDisplay}
+                    <strong>Question:</strong> ${question}<br>
                     <strong>Answer:</strong> ${answer}
                 </div>
             `);
-        }
+
+            // Scroll the entire window to the bottom of the page
+            window.scrollTo({
+                top: document.body.scrollHeight,
+                behavior: 'smooth'
+            });
+        });
+
+        // Event handler to update the displayed Farm Name
+        $('#farm-name-input').on('input', function () {
+            $('#farm-name-display').text(`Farm Name: ${$(this).val()}`);
+        });
+
+        // Scroll to Top Button visibility logic based on window scroll position
+        $(window).on('scroll', function() {
+            if ($(window).scrollTop() > 300) { // Show button after scrolling 300px
+                $('#scroll-top-button').fadeIn(); // Fade in the button
+            } else {
+                $('#scroll-top-button').fadeOut(); // Fade out the button
+            }
+        });
+
+        // Scroll to Top Button click handler
+        $('#scroll-top-button').on('click', function() {
+            $('html, body').animate({ scrollTop: 0 }, 'slow'); // Smooth scroll to the top
+        });
+
+        // Initial check on page load to hide the button if the user is at the top
+        $(document).ready(function() {
+            if ($(window).scrollTop() === 0) {
+                $('#scroll-top-button').hide(); // Ensure button is hidden on page load
+            }
+        });
     </script>
-
 {% endblock %}
-

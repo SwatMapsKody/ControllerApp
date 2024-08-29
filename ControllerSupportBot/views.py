@@ -2,57 +2,55 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render
 from .models import Manufacturer, Controller, Version, SupportWorkflow
 
+# View for rendering the initial landing page
 def landing_page(request):
-    manufacturers = Manufacturer.objects.all()
-    controllers = Controller.objects.select_related('manufacturer').all()
-    controllers_by_manufacturer = {m.id: [] for m in manufacturers}
-    for controller in controllers:
-        controllers_by_manufacturer[controller.manufacturer.id].append(controller)
-
+    """
+    Handles the initial loading of the landing page.
+    Retrieves all manufacturers to be displayed as the first column.
+    """
+    manufacturers = Manufacturer.objects.all()  # Fetch all manufacturers
     return render(request, 'landing_page.html', {
-        'manufacturers': manufacturers,
-        'controllers_by_manufacturer': controllers_by_manufacturer
+        'manufacturers': manufacturers,  # Pass manufacturers to the template
     })
 
-
-def troubleshooting(request):
-    manufacturers = Manufacturer.objects.all()
-    selected_manufacturer = None
-    selected_controller = None
-    workflows = None
-
-    if 'manufacturer' in request.GET:
-        selected_manufacturer = Manufacturer.objects.get(id=request.GET['manufacturer'])
-        controllers = selected_manufacturer.controllers.all()
-    else:
-        controllers = None
-
-    if 'controller' in request.GET and controllers:
-        selected_controller = Controller.objects.get(id=request.GET['controller'])
-        workflows = selected_controller.support_workflows.all()
-
-    context = {
-        'manufacturers': manufacturers,
-        'controllers': controllers,
-        'workflows': workflows,
-        'selected_manufacturer': selected_manufacturer,
-        'selected_controller': selected_controller,
-    }
-    return render(request, 'troubleshooting.html', context)
-
-
-
-def get_controllers(request, manufacturer_id):
+# View for handling manufacturer selection
+def load_controllers(request, manufacturer_id):
+    """
+    Handles loading controllers when a manufacturer is selected.
+    Fetches controllers associated with the selected manufacturer.
+    Renders a partial template with the controllers.
+    """
     manufacturer = get_object_or_404(Manufacturer, id=manufacturer_id)
-    controllers = list(manufacturer.controllers.all().values('id', 'model'))
-    return JsonResponse(controllers, safe=False)
+    controllers = manufacturer.controllers.all()
+    return render(request, 'partials/controllers.html', {
+        'controllers': controllers,
+        'manufacturer': manufacturer
+    })
 
-def get_versions(request, controller_id):
+# View for handling controller selection
+def load_versions(request, controller_id):
+    """
+    Handles loading versions when a controller is selected.
+    Fetches versions associated with the selected controller.
+    Renders a partial template with the versions.
+    """
     controller = get_object_or_404(Controller, id=controller_id)
-    versions = list(controller.versions.all().values('id', 'version'))
-    return JsonResponse(versions, safe=False)
+    versions = controller.versions.all()
+    return render(request, 'partials/versions.html', {
+        'versions': versions,
+        'controller': controller
+    })
 
-def get_workflows(request, version_id):
+# View for handling version selection
+def load_workflows(request, version_id):
+    """
+    Handles loading workflows when a version is selected.
+    Fetches workflows associated with the selected version.
+    Renders a partial template with the workflows.
+    """
     version = get_object_or_404(Version, id=version_id)
-    workflows = list(version.support_workflows.all().values('id', 'question', 'answer'))
-    return JsonResponse(workflows, safe=False)
+    workflows = version.support_workflows.all()
+    return render(request, 'partials/workflows.html', {
+        'workflows': workflows,
+        'version': version
+    })
